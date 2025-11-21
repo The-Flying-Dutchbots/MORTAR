@@ -34,4 +34,8 @@ public class Constants {
    public static final double ENCODER_TICKS_PER_INCH = -50;
    public static final double TICKS_PER_DEGREE = -9;
    public static final double TESTTEST = 9.0;
+
+   public static final double PPG_TAG_ID = 0;
+   public static final double PGP_TAG_ID = 0;
+   public static final double GPP_TAG_ID = 0;
 }
