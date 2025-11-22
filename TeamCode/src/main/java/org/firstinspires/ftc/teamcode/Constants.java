@@ -11,16 +11,13 @@ public class Constants {
    public static final double CLOSE_SHOT_POWER = 0.67;
    public static final double MID_SHOT_POWER = 0.85;
    public static final double FAR_SHOT_POWER = 1.0;
+   public static final double CLOSE_SHOT_RPM = 4020;
+   public static final double MID_SHOT_RPM = 5100;
+   public static final double FAR_SHOT_RPM = 6000;
+   public static final double TPR = 28;
    public static final double SHOOTER_STOW_POWER = -1.0;
    public static final double SHOOT_WAIT_TIMER = 0.9;
 
-   public static final double AUTO_AIM_BLUE_LEFT_TOLERANCE = 50.0;
-   public static final double AUTO_AIM_BLUE_RIGHT_TOLERANCE = 40.0;
-   public static final double AUTO_AIM_RED_LEFT_TOLERANCE = 50.0;
-   public static final double AUTO_AIM_RED_RIGHT_TOLERANCE = 40.0;
-
-   public static final double AUTO_AIM_ROTATE_LEFT_POWER = -0.5;
-   public static final double AUTO_AIM_ROTATE_RIGHT_POWER = 0.5;
    public static final double INTAKE_POWER = 0.3;
    public static final double INTAKE_STOW_TIMER = 0.5;
 

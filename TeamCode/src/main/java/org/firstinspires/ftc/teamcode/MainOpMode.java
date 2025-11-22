@@ -102,7 +102,7 @@ public class MainOpMode extends OpMode {
             isShooting = false;
         }else if(gamepad1.left_trigger > 0.5){
             intakeSys.intakeReverse();
-            shooterSys.setShooterPower(-0.5);
+            shooterSys.setShooterRPM(-0.5);
 
         }else{
           intakeSys.intakeStop();
@@ -151,6 +151,9 @@ public class MainOpMode extends OpMode {
         telemetry.addData("Touch One",intakeSys.getTouchOne());
         telemetry.addData("Touch Two",intakeSys.getTouchTwo());
         telemetry.addData("Beam Break", intakeSys.getBeamBreak());
+
+        telemetry.addData("goal rpm",shooterSys.getTargetRPM());
+        telemetry.addData("current rpm", shooterSys.getShooterRPM());
         telemetry.update();
 
 

@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Constants;
-import org.opencv.objdetect.HOGDescriptor;
 
 public class ShooterSys {
 
@@ -21,11 +20,11 @@ public class ShooterSys {
     boolean isMoving;
 
     DcMotor shooterMotor;
-    //DcMotorEx shooterMtr;
+    DcMotorEx shooterMtr;
     CRServo hoodServo;
 
 
-
+    private double targetRPM;
     private HoodState currentHoodState = HoodState.STOWED;
     private HoodState targetHoodState = HoodState.STOWED; // desired hood position
 
@@ -38,16 +37,19 @@ public class ShooterSys {
         targetHoodState  = HoodState.STOWED;
 
         stateTimer.reset();
+
         shooterMotor = hwmap.get(DcMotor.class, "shooter_motor");
         shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         shooterMotor.setDirection(DcMotor.Direction.REVERSE);
 
 //shooter conversion to rpm controller begins here
-     /*   shooterMtr = hwmap.get(DcMotorEx.class, "INSERT NAME?");
+        shooterMtr = hwmap.get(DcMotorEx.class, "shooter_motor");
         shooterMtr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooterMtr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterMtr.setVelocityPIDFCoefficients(0,0,0,0);*/
+        shooterMtr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shooterMtr.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMtr.setVelocityPIDFCoefficients(0,0,0,10);
 
         hoodServo = hwmap.get(CRServo.class, "hood_servo");
         hoodServo.setDirection(CRServo.Direction.FORWARD);
@@ -56,28 +58,39 @@ public class ShooterSys {
 
     }
 
-    public void setShooterPower(double shooterPower){
-        shooterMotor.setPower(shooterPower);
-
-
+    public void setShooterRPM(double shooterRPM){
+        targetRPM = shooterRPM;
+        double AdjustedRPM = (shooterRPM / 60.0) * Constants.TPR;
+       // shooterMotor.setPower(shooterRPM); this is in case we revert
+        shooterMtr.setVelocity(AdjustedRPM);
     }
+    public double getShooterRPM(){
+        double TPS = shooterMtr.getVelocity();
+        return  (TPS / Constants.TPR) * 60.0;
+    }
+    public double getTargetRPM(){
+        return targetRPM;
+    }
+
+
+
     public void startShooting(){
         if(currentHoodState == HoodState.STOWED){
-            setShooterPower(Constants.CLOSE_SHOT_POWER);
+            setShooterRPM(Constants.CLOSE_SHOT_RPM);
 
         }
         else if(currentHoodState == HoodState.MID){
-            setShooterPower(Constants.MID_SHOT_POWER);
+            setShooterRPM(Constants.MID_SHOT_RPM);
         }
         else if(currentHoodState == HoodState.FAR){
-            setShooterPower(Constants.FAR_SHOT_POWER);
+            setShooterRPM(Constants.FAR_SHOT_RPM);
         }
 
 
     }
 
     public void stopShooting(){
-        setShooterPower(0);
+        setShooterRPM(0);
     }
 //begining of the hood control
     public void setHoodState(HoodState newState) {

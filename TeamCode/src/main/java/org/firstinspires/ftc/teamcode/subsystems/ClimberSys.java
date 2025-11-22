@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Constants;
@@ -15,11 +16,11 @@ public class ClimberSys {
         rightClimberMotor = hwmap.get(DcMotor.class, "right_climber_motor");
 
         leftClimberMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftClimberMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftClimberMotor.setDirection(DcMotor.Direction.REVERSE);
         leftClimberMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rightClimberMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightClimberMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightClimberMotor.setDirection(DcMotor.Direction.FORWARD);
         rightClimberMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftClimberMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
