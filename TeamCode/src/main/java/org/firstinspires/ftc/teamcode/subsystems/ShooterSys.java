@@ -38,10 +38,10 @@ public class ShooterSys {
 
         stateTimer.reset();
 
-        shooterMotor = hwmap.get(DcMotor.class, "shooter_motor");
-        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        shooterMotor.setDirection(DcMotor.Direction.REVERSE);
+//        shooterMotor = hwmap.get(DcMotor.class, "shooter_motor");
+//        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+//        shooterMotor.setDirection(DcMotor.Direction.REVERSE);
 
 //shooter conversion to rpm controller begins here
         shooterMtr = hwmap.get(DcMotorEx.class, "shooter_motor");
@@ -49,7 +49,8 @@ public class ShooterSys {
         shooterMtr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooterMtr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         shooterMtr.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooterMtr.setVelocityPIDFCoefficients(0,0,0,10);
+       // shooterMtr.setVelocityPIDFCoefficients(18,0,3,12);
+        shooterMtr.setVelocityPIDFCoefficients(40,0,3,11.7);
 
         hoodServo = hwmap.get(CRServo.class, "hood_servo");
         hoodServo.setDirection(CRServo.Direction.FORWARD);

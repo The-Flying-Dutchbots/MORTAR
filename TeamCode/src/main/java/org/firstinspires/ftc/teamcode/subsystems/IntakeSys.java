@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import androidx.annotation.Nullable;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -14,14 +15,18 @@ import org.firstinspires.ftc.teamcode.Constants;
 
 public class IntakeSys {
 
+
     CRServo indexerServo;
     CRServo indexerServoTwo;
     DcMotor intakeMotor;
+
 
     DigitalChannel touchOne,touchTwo,beamBreak;
     private ElapsedTime touchTimer = new ElapsedTime();
 
     public void init(HardwareMap hwmap){
+
+
         indexerServoTwo = hwmap.get(CRServo.class, "indexer_servo_two");
         indexerServo = hwmap.get(CRServo.class, "indexer_servo");
         indexerServo.setDirection(CRServo.Direction.REVERSE);
@@ -43,25 +48,35 @@ public class IntakeSys {
 
         beamBreak = hwmap.get(DigitalChannel.class, "beam_break");
         beamBreak.setMode(DigitalChannel.Mode.INPUT);
+
+
+
     }
 public void intakeStart(){
         boolean isWaiting = ((!touchOne.getState()) || (!touchTwo.getState()));
         boolean beamBreak_broken = !beamBreak.getState();
 
-    intakeMotor.setPower(Constants.INTAKE_POWER);
+
    if(beamBreak_broken){
        indexerServo.setPower(0);
        indexerServoTwo.setPower(0);
+       intakeMotor.setPower(0);
+
    } else if (isWaiting) {
         indexerServo.setPower(Constants.INDEXER_INTAKE_POWER);
        indexerServoTwo.setPower(Constants.INDEXER_INTAKE_POWER);
+       intakeMotor.setPower(Constants.INTAKE_POWER);
         touchTimer.reset();
+
     } else if(touchTimer.seconds() <= Constants.TOUCH_SENSOR_TIMER) {
         indexerServo.setPower(Constants.INDEXER_INTAKE_POWER);
        indexerServoTwo.setPower(Constants.INDEXER_INTAKE_POWER);
+       intakeMotor.setPower(Constants.INTAKE_POWER);
+
     } else{
        indexerServo.setPower(0);
        indexerServoTwo.setPower(0);
+       intakeMotor.setPower(Constants.INTAKE_POWER);
     }
 
 }
@@ -107,6 +122,5 @@ public void intakeReverse(){
         indexerServo.setPower(-0.8);
         indexerServoTwo.setPower(-0.8);
 }
-
 
 }

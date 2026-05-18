@@ -20,9 +20,9 @@ import org.firstinspires.ftc.teamcode.subsystems.VisionSys;
 
 
 
-@Autonomous(name = "PedroRedCloseAuto", group = "Autonomous")
+@Autonomous(name = "PedroRedCloseAutoGOLDEN", group = "Autonomous")
 @Configurable // Panels
-public class PedroRedCloseAuto extends OpMode {
+public class PedroRedCloseGOLDEN extends OpMode {
 
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
@@ -110,7 +110,7 @@ public class PedroRedCloseAuto extends OpMode {
                     .addPath(
                             new BezierLine(new Pose(128.108, 83.144), new Pose(83.338, 82.950))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(-145)) //make smaller if miss right
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(-144)) //make smaller if miss right
                     .build();
 
             IntakeMiddleSetup = follower
@@ -122,7 +122,7 @@ public class PedroRedCloseAuto extends OpMode {
                                     new Pose(95.160, 60.081)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(-145), Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(-142), Math.toRadians(0))
                     .build();
 
             IntakeMiddleLoad = follower
@@ -139,24 +139,24 @@ public class PedroRedCloseAuto extends OpMode {
                             new BezierCurve(
                                     new Pose(129.464, 58.530),
                                     new Pose(96.323, 69.384),
-                                    new Pose(83.338, 82.950)
+                                    new Pose(82.950, 82.563)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(-140))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(-142))
                     .build();
 
             LEAVE = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(83.338, 82.950), new Pose(99.618, 35.661))
+                            new BezierLine(new Pose(82.950, 82.563), new Pose(99.991, 109.215))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(-140), Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(-142), Math.toRadians(0))
                     .build();
 
             LEAVEFR = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(99.618, 35.661), new Pose(86.439, 35.855))
+                            new BezierLine(new Pose(99.991, 109.215), new Pose(90.439, 109.855))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
@@ -225,7 +225,7 @@ public class PedroRedCloseAuto extends OpMode {
                     intakeSys.intakeStop();
                     shooterSys.stopShooting();
                     follower.followPath(paths.IntakeMiddleSetup);
-                    pathState++;
+                    pathState =12;
                 }
                 break;
             case 8: // begin intake

@@ -8,7 +8,6 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,11 +17,9 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSys;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSys;
 import org.firstinspires.ftc.teamcode.subsystems.VisionSys;
 
-
-
-@Autonomous(name = "PedroRedCloseAuto", group = "Autonomous")
+@Autonomous(name = "PedroRedFar", group = "Autonomous")
 @Configurable // Panels
-public class PedroRedCloseAuto extends OpMode {
+public class PedroRedFarAuto extends OpMode {
 
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
@@ -39,7 +36,7 @@ public class PedroRedCloseAuto extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(125.5, 120.7, Math.toRadians(-144)));
+        follower.setStartingPose(new Pose(81.4, 8.7, Math.toRadians(-90)));
 
         paths = new Paths(follower); // Build paths
 
@@ -61,122 +58,127 @@ public class PedroRedCloseAuto extends OpMode {
         panelsTelemetry.debug("X", follower.getPose().getX());
         panelsTelemetry.debug("Y", follower.getPose().getY());
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
+        panelsTelemetry.debug("shooterRPM",shooterSys.getShooterRPM());
         panelsTelemetry.update(telemetry);
+
     }
 
     public static class Paths {
 
-        public PathChain ScorePreloadsClose;
-        public PathChain IntakeLeftSetup;
-        public PathChain IntakeLeftLoad;
-        public PathChain LeftToScore;
-        public PathChain IntakeMiddleSetup;
-        public PathChain IntakeMiddleLoad;
-        public PathChain MiddleToScore;
+        public PathChain ShootPreloads;
+        public PathChain IntakeRightSetup;
+        public PathChain IntakeRightLoad;
+        public PathChain RightToScore;
+        public PathChain IntakeWallSetup;
+        public PathChain IntakeWallLoad;
+        public PathChain WallToShoot;
         public PathChain LEAVE;
         public PathChain LEAVEFR;
 
         public Paths(Follower follower) {
-            ScorePreloadsClose = follower
+            ShootPreloads = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(125.588, 120.743), new Pose(109.991, 109.215))
+                            new BezierLine(new Pose(81.400, 8.721), new Pose(83.725, 13.373))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(-144), Math.toRadians(-135))
+                    .setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-120))
                     .build();
 
-            IntakeLeftSetup = follower
+            IntakeRightSetup = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(112.991, 112.215),
-                                    new Pose(97.873, 105.626),
-                                    new Pose(97.098, 84.501)
+                                    new Pose(83.725, 13.373),
+                                    new Pose(83.144, 24.420),
+                                    new Pose(99.230, 35.855)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(-135), Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(-120), Math.toRadians(0))
                     .build();
 
-            IntakeLeftLoad = follower
+            IntakeRightLoad = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(97.098, 84.501), new Pose(128.108, 83.144))
+                            new BezierLine(new Pose(99.230, 35.855), new Pose(133.147, 35.661))
                     )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setTangentHeadingInterpolation()
                     .build();
 
-            LeftToScore = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(128.108, 83.144), new Pose(83.338, 82.950))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(-145)) //make smaller if miss right
-                    .build();
-
-            IntakeMiddleSetup = follower
+            RightToScore = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(83.338, 82.950),
-                                    new Pose(87.795, 67.445),
-                                    new Pose(95.160, 60.081)
+                                    new Pose(133.147, 35.661),
+                                    new Pose(98.649, 34.304),
+                                    new Pose(84.307, 15.311)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(-145), Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(-116))
                     .build();
 
-            IntakeMiddleLoad = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(95.160, 60.081), new Pose(129.464, 58.530))
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
-                    .build();
-
-            MiddleToScore = follower
+            IntakeWallSetup = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(129.464, 58.530),
-                                    new Pose(96.323, 69.384),
-                                    new Pose(83.338, 82.950)
+                                    new Pose(84.307, 15.311),
+                                    new Pose(104.269, 27.908),
+                                    new Pose(134.371, 24.614)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(-140))
+                    .setLinearHeadingInterpolation(Math.toRadians(-116), Math.toRadians(-90))
+                    .build();
+
+            IntakeWallLoad = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(134.371, 24.614), new Pose(133.790, 11.047))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(-90))
+                    .build();
+
+            WallToShoot = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(133.790, 11.047),
+                                    new Pose(119.580, 20.156),
+                                    new Pose(84.501, 15.311)
+                            )
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(-60), Math.toRadians(-115))
                     .build();
 
             LEAVE = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(83.338, 82.950), new Pose(99.618, 35.661))
+                            new BezierLine(new Pose(84.501, 15.311), new Pose(86.633, 37.987))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(-140), Math.toRadians(0))
+                    .setConstantHeadingInterpolation(Math.toRadians(-115))
                     .build();
 
             LEAVEFR = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(99.618, 35.661), new Pose(86.439, 35.855))
+                            new BezierLine(new Pose(86.633, 37.987), new Pose(93.610, 42.832))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                    .setTangentHeadingInterpolation()
                     .build();
         }
     }
-
-
-
-
 
     public int autonomousPathUpdate() {
         switch (pathState) {
             case 1: // move to preload shooting position
                 shooterSys.startShooting();
-                follower.followPath(paths.ScorePreloadsClose);
+                shooterSys.setHoodState(ShooterSys.HoodState.FAR);
+                utilityTimer.reset();
+                follower.followPath(paths.ShootPreloads);
                 pathState++;
                 break;
 
             case 2: // start intake to shoot preloads
-                if (!follower.isBusy()) {
+                shooterSys.startShooting();
+                if (!follower.isBusy() && utilityTimer.seconds() > 2.0) {
                     utilityTimer.reset();
                     intakeSys.shootStart();
                     pathState++;
@@ -185,9 +187,8 @@ public class PedroRedCloseAuto extends OpMode {
             case 3: // wait to shoot balls then go to the left intake position
                 shooterSys.startShooting();
                 intakeSys.shootStart();
-                if (utilityTimer.seconds() > 5.0) {
-                    follower.followPath(paths.IntakeLeftSetup);
-                    shooterSys.setHoodState(ShooterSys.HoodState.MID);
+                if (utilityTimer.seconds() > 4.5) {
+                    follower.followPath(paths.IntakeRightSetup);
                     intakeSys.intakeStop();
                     shooterSys.stopShooting();
                     pathState++;
@@ -196,7 +197,7 @@ public class PedroRedCloseAuto extends OpMode {
             case 4: // begin intake
                 intakeSys.intakeStart();
                 if(!follower.isBusy()){
-                    follower.followPath(paths.IntakeLeftLoad);
+                    follower.followPath(paths.IntakeRightLoad);
                     follower.setMaxPower(0.4);
                     pathState++;
                 }
@@ -205,58 +206,63 @@ public class PedroRedCloseAuto extends OpMode {
                 intakeSys.intakeStart();
                 if(!follower.isBusy()){
 
-                    follower.followPath(paths.LeftToScore);
+                    follower.followPath(paths.RightToScore);
+                    utilityTimer.reset();
                     follower.setMaxPower(1);
                     pathState++;
+                    shooterSys.startShooting();
                 }
                 break;
             case 6:
-                intakeSys.intakeStart();
+                intakeSys.intakeStop();
                 shooterSys.startShooting();
-                if(!follower.isBusy()){
+                if(!follower.isBusy() && utilityTimer.seconds() >3.0){
                     utilityTimer.reset();
                     intakeSys.shootStart();
+                    shooterSys.startShooting();
                     pathState++;
                 }
                 break;
             case 7:
                 shooterSys.startShooting();
-                if(utilityTimer.seconds() > 5.0){
+                if(utilityTimer.seconds() > 4.5){
                     intakeSys.intakeStop();
                     shooterSys.stopShooting();
-                    follower.followPath(paths.IntakeMiddleSetup);
+                    follower.followPath(paths.IntakeWallSetup);
                     pathState++;
                 }
                 break;
             case 8: // begin intake
                 intakeSys.intakeStart();
                 if(!follower.isBusy()){
-                    follower.followPath(paths.IntakeMiddleLoad);
-                    follower.setMaxPower(0.4);
+                    follower.followPath(paths.IntakeWallLoad);
+                    utilityTimer.reset();
+                    follower.setMaxPower(0.6);
                     pathState++;
                 }
                 break;
             case 9:
                 intakeSys.intakeStart();
-                if(!follower.isBusy()){
+                if(!follower.isBusy() || utilityTimer.seconds() > 2.3){
                     intakeSys.intakeStop();
                     shooterSys.startShooting();
-                    follower.followPath(paths.MiddleToScore);
+                    follower.followPath(paths.WallToShoot);
                     follower.setMaxPower(1);
+                    utilityTimer.reset();
                     pathState++;
                 }
                 break;
             case 10:
                 intakeSys.intakeStart();
                 shooterSys.startShooting();
-                if(!follower.isBusy()){
+                if(!follower.isBusy() && utilityTimer.seconds() >3.0){
                     utilityTimer.reset();
                     pathState++;
                 }
                 break;
             case 11:
                 intakeSys.shootStart();
-                if(utilityTimer.seconds() >5.0){
+                if(utilityTimer.seconds() >4.2){
                     intakeSys.intakeStop();
                     shooterSys.stopShooting();
                     pathState++;
@@ -264,6 +270,7 @@ public class PedroRedCloseAuto extends OpMode {
                 break;
             case 12:
                 follower.followPath(paths.LEAVE);
+                shooterSys.setHoodState(ShooterSys.HoodState.STOWED);
                 pathState++;
                 break;
             case 13:
@@ -282,4 +289,3 @@ public class PedroRedCloseAuto extends OpMode {
         return pathState;
     }
 }
-

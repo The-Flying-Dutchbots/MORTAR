@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
 
 public class ArcadeDriveSys {
@@ -17,6 +19,7 @@ public class ArcadeDriveSys {
 
 
     private IMU imu;
+    private GoBildaPinpointDriver pinpoint;
 
     public void init(HardwareMap hwmap){
 
@@ -53,6 +56,10 @@ public class ArcadeDriveSys {
         );
 
         imu.initialize(new IMU.Parameters(HubOrientation));
+
+        pinpoint = hwmap.get(GoBildaPinpointDriver.class,"pinpoint");
+        pinpoint.resetPosAndIMU();
+
     }
 
     public void autoInit(HardwareMap hwmap){
@@ -98,6 +105,8 @@ public class ArcadeDriveSys {
         );
 
         imu.initialize(new IMU.Parameters(HubOrientation));
+
+        pinpoint = hwmap.get(GoBildaPinpointDriver.class,"pinpoint");
     }
 
 
@@ -156,10 +165,10 @@ public class ArcadeDriveSys {
         RR_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set target positions for turning
-        FL_motor.setTargetPosition(ticks);   // left wheels forward
-        RL_motor.setTargetPosition(ticks);
-        FR_motor.setTargetPosition(-ticks);  // right wheels backward
-        RR_motor.setTargetPosition(-ticks);
+        FL_motor.setTargetPosition(-ticks);   // left wheels forward
+        RL_motor.setTargetPosition(-ticks);
+        FR_motor.setTargetPosition(ticks);  // right wheels backward
+        RR_motor.setTargetPosition(ticks);
 
         // Set power
         FL_motor.setPower(power);
@@ -200,7 +209,7 @@ public class ArcadeDriveSys {
         double newStrafe = r * Math.cos(theta);
 
         this.RobotOrientedDrive(newFoward, newStrafe, rotate);
-
+        pinpoint.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
 
     }
 
@@ -217,15 +226,35 @@ public class ArcadeDriveSys {
 
         // Clamp power
         turnPower = Math.max(-0.5, Math.min(0.5, turnPower));
-
+        pinpoint.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
         return turnPower;
     }
 
+    public double limeLightAim(double Tx) {
+        double error = Tx;
+
+        double kP = 0.03; // Tune this
+        double turnPower = -kP * error;
+
+        // Clamp power
+        turnPower = Math.max(-0.5, Math.min(0.5, turnPower));
+        pinpoint.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
+        return turnPower;
+    }
+
+
+
+
+
     public void ResetPose(){
         imu.resetYaw();
+        pinpoint.resetPosAndIMU();
     }
     public double getYaw(){
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+    }
+    public double getPinpointYaw(){
+        return pinpoint.getHeading(AngleUnit.DEGREES);
     }
 
     public boolean isBusy() {

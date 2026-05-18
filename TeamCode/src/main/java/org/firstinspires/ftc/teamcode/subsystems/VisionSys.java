@@ -38,4 +38,19 @@ public class VisionSys {
         }
         return firstId;
     }
+    public void setPipeline(int pipeline){
+        limelight.pipelineSwitch(pipeline);
+    }
+    public LLResult getLatestResult(){
+        LLResult result;
+        return result = limelight.getLatestResult();
+    }
+    public double getTx(){
+       LLResult result = limelight.getLatestResult();
+      return result.getTx();
+    }
+    public boolean hasTarget(){
+        LLResult result = limelight.getLatestResult();
+        return result.isValid();
+    }
 }

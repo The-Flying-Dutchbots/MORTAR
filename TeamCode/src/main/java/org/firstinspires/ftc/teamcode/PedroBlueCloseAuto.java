@@ -26,7 +26,7 @@ public class PedroBlueCloseAuto extends OpMode {
 
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
-    private int pathState; // Current autonomous path state (state machine)
+    private int pathState = 1; // Current autonomous path state (state machine)
     private Paths paths; // Paths defined in the Paths class
 
     ShooterSys shooterSys = new ShooterSys();
@@ -40,6 +40,7 @@ public class PedroBlueCloseAuto extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(18.4, 120.9, Math.toRadians(-37)));
+
 
         paths = new Paths(follower); // Build paths
 
@@ -68,20 +69,19 @@ public class PedroBlueCloseAuto extends OpMode {
 
         public PathChain ScorePreloadsClose;
         public PathChain IntakeLeftSetup;
-        public PathChain IntakeLeftLoadOne;
-        public PathChain IntakeLeftLoadTwo;
+        public PathChain IntakeLeftLoad;
         public PathChain LeftToScore;
         public PathChain IntakeMiddleSetup;
-        public PathChain IntakeMiddleLoadOne;
-        public PathChain IntakeMiddleLoadTwo;
+        public PathChain IntakeMiddleLoad;
         public PathChain MiddleToScore;
         public PathChain LEAVE;
+        public PathChain LEAVEFR;
 
         public Paths(Follower follower) {
             ScorePreloadsClose = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(18.412, 120.937), new Pose(26.746, 116.285))
+                            new BezierLine(new Pose(19.412, 119.937), new Pose(34.397, 108.828))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(-37), Math.toRadians(-45))
                     .build();
@@ -90,26 +90,18 @@ public class PedroBlueCloseAuto extends OpMode {
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(26.746, 116.285),
+                                    new Pose(31.397, 111.828),
                                     new Pose(47.483, 110.859),
-                                    new Pose(43.026, 83.919)
+                                    new Pose(47.289, 84.307)
                             )
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(-45), Math.toRadians(180))
                     .build();
 
-            IntakeLeftLoadOne = follower
+            IntakeLeftLoad = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(43.026, 83.919), new Pose(28.684, 83.532))
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build();
-
-            IntakeLeftLoadTwo = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(28.684, 83.532), new Pose(16.086, 83.532))
+                            new BezierLine(new Pose(47.289, 84.307), new Pose(15.699, 83.532))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
@@ -117,35 +109,27 @@ public class PedroBlueCloseAuto extends OpMode {
             LeftToScore = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(16.086, 83.532), new Pose(55.623, 87.602))
+                            new BezierLine(new Pose(15.699, 83.532), new Pose(61.499, 82.532))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-45))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-39))
                     .build();
 
             IntakeMiddleSetup = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(55.623, 87.602),
-                                    new Pose(57.755, 61.244),
-                                    new Pose(41.669, 60.468)
+                                    new Pose(61.499, 82.532),
+                                    new Pose(55.042, 66.283),
+                                    new Pose(47.289, 60.662)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(-45), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(-39), Math.toRadians(180))
                     .build();
 
-            IntakeMiddleLoadOne = follower
+            IntakeMiddleLoad = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(41.669, 60.468), new Pose(28.296, 59.887))
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build();
-
-            IntakeMiddleLoadTwo = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(28.296, 59.887), new Pose(13.954, 58.724))
+                            new BezierLine(new Pose(47.289, 60.662), new Pose(14.536, 58.336))
                     )
                     .setConstantHeadingInterpolation(Math.toRadians(180))
                     .build();
@@ -154,23 +138,36 @@ public class PedroBlueCloseAuto extends OpMode {
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(13.954, 58.724),
+                                    new Pose(14.536, 58.336),
                                     new Pose(52.522, 59.499),
-                                    new Pose(55.623, 87.214)
+                                    new Pose(61.499, 82.532)
                             )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-45))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-42))
                     .build();
 
             LEAVE = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(55.623, 87.214), new Pose(39.149, 35.661))
+                            new BezierCurve(
+                                    new Pose(61.499, 82.532),
+                                    new Pose(57.755, 44.188),
+                                    new Pose(46.708, 35.273)
+                            )
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(-45), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(-42), Math.toRadians(180))
+                    .build();
+
+            LEAVEFR = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(46.708, 35.273), new Pose(55.429, 35.273))
+                    )
+                    .setTangentHeadingInterpolation()
                     .build();
         }
     }
+
 
     public int autonomousPathUpdate() {
         switch (pathState) {
@@ -201,26 +198,22 @@ public class PedroBlueCloseAuto extends OpMode {
             case 4: // begin intake
                 intakeSys.intakeStart();
                 if(!follower.isBusy()){
-                    follower.followPath(paths.IntakeLeftLoadOne);
+                    follower.followPath(paths.IntakeLeftLoad);
+                    follower.setMaxPower(0.4);
                     pathState++;
                 }
                 break;
             case 5:
                 intakeSys.intakeStart();
                 if(!follower.isBusy()){
-                    follower.followPath(paths.IntakeLeftLoadTwo);
+
+                    follower.followPath(paths.LeftToScore);
+                    follower.setMaxPower(1);
                     pathState++;
                 }
                 break;
             case 6:
                 intakeSys.intakeStart();
-                if(!follower.isBusy()){
-                    intakeSys.intakeStop();
-                    follower.followPath(paths.LeftToScore);
-                    pathState++;
-                }
-                break;
-            case 7:
                 shooterSys.startShooting();
                 if(!follower.isBusy()){
                     utilityTimer.reset();
@@ -228,7 +221,7 @@ public class PedroBlueCloseAuto extends OpMode {
                     pathState++;
                 }
                 break;
-            case 8:
+            case 7:
                 shooterSys.startShooting();
                 if(utilityTimer.seconds() > 5.0){
                     intakeSys.intakeStop();
@@ -237,37 +230,33 @@ public class PedroBlueCloseAuto extends OpMode {
                     pathState++;
                 }
                 break;
-            case 9: // begin intake
+            case 8: // begin intake
                 intakeSys.intakeStart();
                 if(!follower.isBusy()){
-                    follower.followPath(paths.IntakeMiddleLoadOne);
+                    follower.followPath(paths.IntakeMiddleLoad);
+                    follower.setMaxPower(0.4);
                     pathState++;
                 }
                 break;
-            case 10:
-                intakeSys.intakeStart();
-                if(!follower.isBusy()){
-                    follower.followPath(paths.IntakeMiddleLoadTwo);
-                    pathState++;
-                }
-                break;
-            case 11:
+            case 9:
                 intakeSys.intakeStart();
                 if(!follower.isBusy()){
                     intakeSys.intakeStop();
                     shooterSys.startShooting();
                     follower.followPath(paths.MiddleToScore);
+                    follower.setMaxPower(1);
                     pathState++;
                 }
                 break;
-            case 12:
+            case 10:
+                intakeSys.intakeStart();
                 shooterSys.startShooting();
                 if(!follower.isBusy()){
                     utilityTimer.reset();
                     pathState++;
                 }
                 break;
-            case 13:
+            case 11:
                 intakeSys.shootStart();
                 if(utilityTimer.seconds() >5.0){
                     intakeSys.intakeStop();
@@ -275,7 +264,7 @@ public class PedroBlueCloseAuto extends OpMode {
                     pathState++;
                 }
                 break;
-            case 14:
+            case 12:
                 follower.followPath(paths.LEAVE);
                 break;
 
